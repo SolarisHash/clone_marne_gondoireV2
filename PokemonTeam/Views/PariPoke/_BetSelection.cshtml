@@ -1,0 +1,11 @@
+@* PartialView : Sélection du Pokémon pour le pari *@
+
+<h3>Sur quel Pokémon veux-tu parier ?</h3>
+<div id="betSelection" class="pokemon-cards"></div>
+
+<input type="hidden" id="selectedBetPokemon" />
+
+<div class="input-group mb-3 bet-controls mt-3">
+    <input id="betAmount" type="number" class="form-control bet-input" min="1" value="10">
+    <button id="confirmBet" type="button" class="btn btn-primary">Confirmer mon pari</button>
+</div>

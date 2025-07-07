@@ -1,0 +1,71 @@
+@{
+    ViewData["Title"] = "Boutique Pokémon";
+    Layout = "_GameLayout";
+}
+
+<div class="row">
+    <div class="col-md-9">
+        <div class="game-panel">
+            <h2 class="mb-4">
+                <i class="fas fa-store text-success"></i> Boutique Pokémon
+            </h2>
+            
+            <div class="row" id="shop-items">
+                <!-- Items will be loaded here -->
+                <div class="col-12 text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Chargement...</span>
+                    </div>
+                    <p class="mt-2">Chargement des articles...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="game-panel">
+            <h4><i class="fas fa-wallet"></i> Votre Argent</h4>
+            <div class="text-center">
+                <div class="price-tag mb-3">
+                    <i class="fas fa-coins"></i> 
+                    <span id="current-money">0</span> Pokédollars
+                </div>
+                <small class="text-muted">Combattez pour gagner plus d'argent !</small>
+            </div>
+        </div>
+        
+        <div class="game-panel mt-3">
+            <h4><i class="fas fa-backpack"></i> Votre Inventaire</h4>
+            <div id="player-items">
+                <div class="text-center text-muted">
+                    <i class="fas fa-box-open fa-2x mb-2"></i>
+                    <p>Chargement...</p>
+                </div>
+            </div>
+            <button class="btn btn-info btn-sm mt-2" onclick="refreshInventory()">
+                <i class="fas fa-sync"></i> Actualiser
+            </button>
+        </div>
+        
+        <div class="game-panel mt-3">
+            <h4><i class="fas fa-info-circle"></i> Aide</h4>
+            <small>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-heart text-danger"></i> Les potions restaurent les HP</li>
+                    <li><i class="fas fa-coins text-warning"></i> Gagnez de l'argent en combattant</li>
+                    <li><i class="fas fa-shopping-cart text-success"></i> Cliquez pour acheter</li>
+                </ul>
+            </small>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/shop.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadShop();
+            loadPlayerInventory();
+        });
+    </script>
+}

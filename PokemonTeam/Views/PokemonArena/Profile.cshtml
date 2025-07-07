@@ -1,0 +1,183 @@
+@{
+    ViewData["Title"] = "Profil Joueur";
+    Layout = "_GameLayout";
+}
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="game-panel">
+            <h2 class="mb-4">
+                <i class="fas fa-user-circle text-primary"></i> Profil du Dresseur
+            </h2>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card bg-primary text-white mb-3">
+                        <div class="card-body text-center">
+                            <i class="fas fa-user fa-3x mb-3"></i>
+                            <h4 id="profile-name">Chargement...</h4>
+                            <p class="card-text">Dresseur Pokémon</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card bg-success text-white mb-3">
+                        <div class="card-body text-center">
+                            <i class="fas fa-trophy fa-3x mb-3"></i>
+                            <h4 id="profile-level">Niveau 1</h4>
+                            <p class="card-text">Niveau actuel</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-star text-warning"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h5 id="profile-xp">0</h5>
+                            <small>Points d'Expérience</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-coins text-warning"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h5 id="profile-money">0</h5>
+                            <small>Pokédollars</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-fist-raised text-danger"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h5 id="profile-battles">0</h5>
+                            <small>Combats Gagnés</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <h4><i class="fas fa-chart-line"></i> Progression</h4>
+                <div class="progress mb-2" style="height: 25px;">
+                    <div id="xp-progress" class="progress-bar bg-warning" role="progressbar" style="width: 0%">
+                        <span id="xp-progress-text">0 / 100 XP</span>
+                    </div>
+                </div>
+                <small class="text-muted">XP jusqu'au prochain niveau</small>
+            </div>
+            
+            <div class="mt-4">
+                <h4><i class="fas fa-calendar-alt"></i> Historique Récent</h4>
+                <div id="recent-activity" class="activity-log">
+                    <div class="activity-item">
+                        <i class="fas fa-sign-in-alt text-success"></i>
+                        <span>Connexion au jeu</span>
+                        <small class="text-muted">Aujourd'hui</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="game-panel">
+            <h4><i class="fas fa-medal"></i> Achievements</h4>
+            <div id="achievements">
+                <div class="achievement-item">
+                    <i class="fas fa-baby text-info"></i>
+                    <div>
+                        <strong>Premier Pas</strong>
+                        <small>Créer votre profil</small>
+                    </div>
+                    <i class="fas fa-check-circle text-success"></i>
+                </div>
+                
+                <div class="achievement-item locked">
+                    <i class="fas fa-sword text-muted"></i>
+                    <div>
+                        <strong>Premier Combat</strong>
+                        <small>Gagner votre premier combat</small>
+                    </div>
+                    <i class="fas fa-lock text-muted"></i>
+                </div>
+                
+                <div class="achievement-item locked">
+                    <i class="fas fa-coins text-muted"></i>
+                    <div>
+                        <strong>Collectionneur</strong>
+                        <small>Gagner 1000 Pokédollars</small>
+                    </div>
+                    <i class="fas fa-lock text-muted"></i>
+                </div>
+                
+                <div class="achievement-item locked">
+                    <i class="fas fa-crown text-muted"></i>
+                    <div>
+                        <strong>Maître Dresseur</strong>
+                        <small>Atteindre le niveau 10</small>
+                    </div>
+                    <i class="fas fa-lock text-muted"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="game-panel mt-3">
+            <h4><i class="fas fa-cog"></i> Actions</h4>
+            <div class="d-grid gap-2">
+                <button class="btn btn-primary" onclick="refreshProfile()">
+                    <i class="fas fa-sync"></i> Actualiser Profil
+                </button>
+                <button class="btn btn-success" onclick="window.location.href='/PokemonArena/Combat'">
+                    <i class="fas fa-sword"></i> Aller Combattre
+                </button>
+                <button class="btn btn-info" onclick="window.location.href='/PokemonArena/Shop'">
+                    <i class="fas fa-store"></i> Visiter la Boutique
+                </button>
+                <button class="btn btn-warning" onclick="resetProgress()">
+                    <i class="fas fa-redo"></i> Réinitialiser (Debug)
+                </button>
+            </div>
+        </div>
+        
+        <div class="game-panel mt-3">
+            <h4><i class="fas fa-info-circle"></i> Conseils</h4>
+            <ul class="list-unstyled">
+                <li class="mb-2">
+                    <i class="fas fa-lightbulb text-warning"></i>
+                    <small>Combattez régulièrement pour gagner de l'XP</small>
+                </li>
+                <li class="mb-2">
+                    <i class="fas fa-lightbulb text-warning"></i>
+                    <small>Achetez des potions avant les gros combats</small>
+                </li>
+                <li class="mb-2">
+                    <i class="fas fa-lightbulb text-warning"></i>
+                    <small>Votre niveau augmente tous les 100 XP</small>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/profile.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProfile();
+        });
+    </script>
+}

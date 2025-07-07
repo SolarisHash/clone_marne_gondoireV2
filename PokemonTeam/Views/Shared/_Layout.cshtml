@@ -1,0 +1,377 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - PokemonTeam</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/game.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/PokemonTeam.styles.css" asp-append-version="true" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">
+                <i class="fas fa-bolt text-warning"></i> PokemonTeam
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <ul class="navbar-nav flex-grow-1">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">
+                            <i class="fas fa-home"></i> Accueil
+                        </a>
+                    </li>
+                    
+                    <!-- Menu Jeux Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-dark" href="#" id="gameDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-gamepad text-primary"></i> Jeux
+                        </a>
+                        <ul class="dropdown-menu shadow" aria-labelledby="gameDropdown">
+                            <li>
+                                <h6 class="dropdown-header">
+                                    <i class="fas fa-fire text-danger"></i> Arène Pokémon
+                                </h6>
+                            </li>
+                            <li><a class="dropdown-item" href="/PokemonArena">
+                                <i class="fas fa-home text-info"></i> Tableau de bord
+                            </a></li>
+                            <li><a class="dropdown-item" href="/PokemonArena/Combat">
+                                <i class="fas fa-sword text-danger"></i> Combat Arena
+                            </a></li>
+                            <li><a class="dropdown-item" href="/PokemonArena/Shop">
+                                <i class="fas fa-store text-success"></i> Boutique
+                            </a></li>
+                            <li><a class="dropdown-item" href="/PokemonArena/Profile">
+                                <i class="fas fa-user-circle text-primary"></i> Mon Profil
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <h6 class="dropdown-header">
+                                    <i class="fas fa-horse text-warning"></i> Autres Jeux
+                                </h6>
+                            </li>
+                            <li><a class="dropdown-item" href="/PariPoke?game=PariPoke">
+                                <i class="fas fa-running text-warning"></i> PariPoké Course
+                            </a></li>
+                            <li class="dropdown-item-text text-muted">
+                                <small><i class="fas fa-plus"></i> Plus de jeux bientôt...</small>
+                            </li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">
+                            <i class="fas fa-shield-alt"></i> Confidentialité
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Section Authentification -->
+                <div class="d-flex align-items-center">
+                    <!-- Boutons Connexion/Inscription (visible si non connecté) -->
+                    <div id="auth-buttons" class="me-3">
+                        <a href="/AuthPage" class="btn btn-outline-primary btn-sm me-2">
+                            <i class="fas fa-sign-in-alt"></i> Connexion
+                        </a>
+                        <a href="/AuthPage" class="btn btn-primary btn-sm">
+                            <i class="fas fa-user-plus"></i> Inscription
+                        </a>
+                    </div>
+
+                    <!-- Informations Joueur (visible si connecté) -->
+                    <div id="player-section" style="display:none;" class="d-flex align-items-center">
+                        <!-- Stats rapides -->
+                        <div class="player-quick-stats me-3">
+                            <span class="badge bg-warning text-dark me-1" title="Pokédollars">
+                                <i class="fas fa-coins"></i> <span id="navbar-money">0</span>
+                            </span>
+                            <span class="badge bg-info text-white me-1" title="Points d'expérience">
+                                <i class="fas fa-star"></i> <span id="navbar-xp">0</span>
+                            </span>
+                            <span class="badge bg-success text-white" title="Niveau">
+                                <i class="fas fa-trophy"></i> <span id="navbar-level">1</span>
+                            </span>
+                        </div>
+                        
+                        <!-- Nom du joueur -->
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle btn-sm" type="button" id="playerDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user"></i> <span id="player-name">Joueur</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="playerDropdown">
+                                <li><a class="dropdown-item" href="/PokemonArena/Profile">
+                                    <i class="fas fa-user-circle text-primary"></i> Mon Profil
+                                </a></li>
+                                <li><a class="dropdown-item" href="/PokemonArena">
+                                    <i class="fas fa-gamepad text-success"></i> Mes Jeux
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><button class="dropdown-item text-danger" id="logout-btn">
+                                    <i class="fas fa-sign-out-alt"></i> Déconnexion
+                                </button></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<div class="container">
+    <main role="main" class="pb-3">
+        @RenderBody()
+    </main>
+</div>
+
+<footer class="border-top footer text-muted">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                &copy; 2025 - PokemonTeam - 
+                <a asp-area="" asp-controller="Home" asp-action="Privacy">Confidentialité</a>
+            </div>
+            <div class="col-md-6 text-end">
+                <small>
+                    <i class="fas fa-code text-primary"></i> 
+                    Développé avec ASP.NET Core & <i class="fas fa-heart text-danger"></i>
+                </small>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Scripts -->
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+<script src="~/js/api.js" asp-append-version="true"></script>
+
+<!-- Script d'authentification global -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    checkAuthenticationStatus();
+});
+
+// Vérifier le statut d'authentification
+async function checkAuthenticationStatus() {
+    try {
+        const response = await fetch('/auth/check', { credentials: 'include' });
+        
+        if (response.ok) {
+            const userData = await response.json();
+            showAuthenticatedUser(userData);
+            await loadUserGameData();
+        } else {
+            showUnauthenticatedState();
+        }
+    } catch (error) {
+        console.log('Utilisateur non connecté');
+        showUnauthenticatedState();
+    }
+}
+
+// Afficher l'état utilisateur connecté
+function showAuthenticatedUser(userData) {
+    document.getElementById('auth-buttons').style.display = 'none';
+    document.getElementById('player-section').style.display = 'flex';
+    
+    // CORRECTION: Échapper les caractères spéciaux
+    var emailPart = userData.email.split('@@')[0];
+    document.getElementById('player-name').textContent = emailPart || 'Joueur';
+}
+
+// Afficher l'état utilisateur non connecté
+function showUnauthenticatedState() {
+    document.getElementById('auth-buttons').style.display = 'block';
+    document.getElementById('player-section').style.display = 'none';
+}
+
+// Charger les données de jeu de l'utilisateur
+async function loadUserGameData() {
+    try {
+        // Essayer de récupérer les données du joueur pour le jeu "Arena"
+        const playerResponse = await fetch('/api/player/me?game=Arena', { credentials: 'include' });
+        
+        if (playerResponse.ok) {
+            const playerData = await playerResponse.json();
+            updateNavbarStats(playerData);
+        } else {
+            // Si le joueur n'existe pas, essayer de le créer automatiquement
+            await createPlayerIfNeeded();
+        }
+    } catch (error) {
+        console.log('Erreur chargement données joueur:', error);
+        // Afficher des valeurs par défaut
+        updateNavbarStats({ pokedollar: 0, experience: 0 });
+    }
+}
+
+// Créer un joueur si nécessaire
+async function createPlayerIfNeeded() {
+    try {
+        const userInfo = await fetch('/auth/check', { credentials: 'include' }).then(r => r.json());
+        
+        // CORRECTION: Échapper les caractères spéciaux
+        var emailPart = userInfo.email.split('@@')[0];
+        var playerName = emailPart + '-Arena';
+        
+        const createResponse = await fetch('/api/player/create', {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: playerName, game: 'Arena' })
+        });
+        
+        if (createResponse.ok) {
+            const newPlayer = await createResponse.json();
+            updateNavbarStats(newPlayer);
+        }
+    } catch (error) {
+        console.error('Erreur création joueur:', error);
+        updateNavbarStats({ pokedollar: 0, experience: 0 });
+    }
+}
+
+// Mettre à jour les stats dans la navbar
+function updateNavbarStats(playerData) {
+    const money = playerData.pokedollar || 0;
+    const xp = playerData.experience || 0;
+    const level = Math.floor(xp / 100) + 1;
+    
+    document.getElementById('navbar-money').textContent = formatNumber(money);
+    document.getElementById('navbar-xp').textContent = formatNumber(xp);
+    document.getElementById('navbar-level').textContent = level;
+    
+    // Stocker dans localStorage pour accès rapide
+    localStorage.setItem('playerStats', JSON.stringify({ money: money, xp: xp, level: level }));
+}
+
+// Formater les nombres
+function formatNumber(num) {
+    if (num >= 1000000) {
+        return (num / 1000000).toFixed(1) + 'M';
+    } else if (num >= 1000) {
+        return (num / 1000).toFixed(1) + 'K';
+    }
+    return num.toString();
+}
+
+// Gérer la déconnexion
+document.addEventListener('click', function(e) {
+    if (e.target && (e.target.id === 'logout-btn' || e.target.closest('#logout-btn'))) {
+        handleLogout();
+    }
+});
+
+async function handleLogout() {
+    try {
+        await fetch('/auth/logout', {
+            method: 'POST',
+            credentials: 'include'
+        });
+        
+        // Nettoyer le localStorage
+        localStorage.clear();
+        
+        // Afficher notification
+        showGlobalNotification('Déconnexion réussie !', 'success');
+        
+        // Rediriger après un délai
+        setTimeout(function() {
+            window.location.href = '/';
+        }, 1500);
+        
+    } catch (error) {
+        console.error('Erreur lors de la déconnexion:', error);
+        showGlobalNotification('Erreur lors de la déconnexion', 'error');
+    }
+}
+
+// Fonction pour mettre à jour les stats depuis d'autres pages
+window.updateNavbarStats = updateNavbarStats;
+
+// Fonction globale pour les notifications
+function showGlobalNotification(message, type, duration) {
+    type = type || 'info';
+    duration = duration || 3000;
+    
+    // Créer l'élément notification
+    const notification = document.createElement('div');
+    var alertClass = 'alert-info';
+    var iconClass = 'fa-info-circle';
+    
+    if (type === 'success') {
+        alertClass = 'alert-success';
+        iconClass = 'fa-check-circle';
+    } else if (type === 'error') {
+        alertClass = 'alert-danger';
+        iconClass = 'fa-exclamation-triangle';
+    } else if (type === 'warning') {
+        alertClass = 'alert-warning';
+        iconClass = 'fa-exclamation-circle';
+    }
+    
+    notification.className = 'alert ' + alertClass + ' alert-dismissible fade show';
+    notification.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 9999; min-width: 300px; max-width: 500px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); border: none; border-radius: 10px;';
+    
+    notification.innerHTML = '<div class="d-flex align-items-center"><i class="fas ' + iconClass + ' me-2"></i><span>' + message + '</span><button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button></div>';
+    
+    document.body.appendChild(notification);
+    
+    // Auto-remove après le délai
+    setTimeout(function() {
+        if (notification.parentElement) {
+            notification.classList.remove('show');
+            setTimeout(function() {
+                if (notification.parentElement) {
+                    document.body.removeChild(notification);
+                }
+            }, 150);
+        }
+    }, duration);
+}
+
+// Rendre la fonction disponible globalement
+window.showGlobalNotification = showGlobalNotification;
+
+// Actualiser les stats périodiquement (toutes les 30 secondes)
+setInterval(async function() {
+    if (document.getElementById('player-section').style.display !== 'none') {
+        try {
+            const response = await fetch('/api/player/me?game=Arena', { credentials: 'include' });
+            if (response.ok) {
+                const playerData = await response.json();
+                updateNavbarStats(playerData);
+            }
+        } catch (error) {
+            // Silencieux - pas besoin d'alerter l'utilisateur
+        }
+    }
+}, 30000);
+
+// Gestion des erreurs globales
+window.addEventListener('error', function(e) {
+    console.error('Erreur globale:', e.error);
+});
+
+// Gestion des promesses rejetées
+window.addEventListener('unhandledrejection', function(e) {
+    console.error('Promise rejetée:', e.reason);
+});
+</script>
+
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

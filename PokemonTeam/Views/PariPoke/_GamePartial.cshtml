@@ -1,0 +1,42 @@
+@* _GamePartial.cshtml *@
+
+<section id="game" class="mt-3">
+    <h3>Course Pokémon</h3>
+    <div id="raceContainer">
+        <svg id="raceSVG" width="1600" height="600" viewBox="0 0 1600 600" xmlns="http://www.w3.org/2000/svg" style="background:#70c470;">
+            <!-- COULOIR 1 -->
+            <path id="trackPath1" d="M 300 180 H 1300 A 120 120 0 0 1 1300 420 H 300 A 120 120 0 0 1 300 180 Z"
+                  fill="none" stroke="#d14" stroke-width="20" />
+            <!-- COULOIR 2 -->
+            <path id="trackPath2" d="M 300 200 H 1300 A 100 100 0 0 1 1300 400 H 300 A 100 100 0 0 1 300 200 Z"
+                  fill="none" stroke="#e35" stroke-width="20" />
+            <!-- COULOIR 3 -->
+            <path id="trackPath3" d="M 300 220 H 1300 A 80 80 0 0 1 1300 380 H 300 A 80 80 0 0 1 300 220 Z"
+                  fill="none" stroke="#f56" stroke-width="20" />
+            <!-- COULOIR 4 -->
+            <path id="trackPath4" d="M 300 240 H 1300 A 60 60 0 0 1 1300 360 H 300 A 60 60 0 0 1 300 240 Z"
+                  fill="none" stroke="#f78" stroke-width="20" />
+            
+            <line class="start-line" x1="677.03173828125" y1="170" x2="677.03173828125" y2="190" stroke="white" stroke-width="3"></line>
+            <line class="start-line" x1="551.362060546875" y1="190" x2="551.362060546875" y2="210" stroke="white" stroke-width="3"></line>
+            <line class="start-line" x1="425.66748046875" y1="210" x2="425.66748046875" y2="230" stroke="white" stroke-width="3"></line>
+            <line class="start-line" x1="300" y1="230" x2="300" y2="250" stroke="white" stroke-width="3"></line>
+
+            <line x1="300" y1="170" x2="300" y2="250" stroke="blue" stroke-width="4" stroke-dasharray="6,5" />
+        </svg>
+    </div>
+
+    <div id="game-ui">
+        <button id="startRace" class="btn btn-primary">Démarrer la course</button>
+        <div id="progressBars" style="width: 80%; margin: 20px auto;"></div>
+    </div>
+</section>
+
+<div id="victoryPopup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); text-align:center; z-index:1000;">
+    <div style="background:white; padding:40px; display:inline-block; margin-top:10%; border-radius:8px;">
+        <h1 id="victoryTitle">Victoire !</h1>
+        <img id="victorySprite" src="" alt="Gagnant" style="width:150px; height:150px;" />
+        <p id="victoryMessage"></p>
+        <button onclick="document.getElementById('victoryPopup').style.display='none'" style="padding:10px 20px;">Fermer</button>
+    </div>
+</div>
