@@ -1,0 +1,142 @@
+version: '3.8'
+
+services:
+  # Base de données PostgreSQL
+  postgres:
+    image: postgres:15-alpine
+    container_name: mg_postgres
+    environment:
+      POSTGRES_DB: mg_data
+      POSTGRES_USER: mg_user
+      POSTGRES_PASSWORD: mg_pass
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./infrastructure/data/database/init.sql:/docker-entrypoint-initdb.d/01-init.sql
+      - ./infrastructure/data/database/schema.sql:/docker-entrypoint-initdb.d/02-schema.sql
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mg_user -d mg_data"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+
+  # Redis pour le cache (optionnel)
+  redis:
+    image: redis:7-alpine
+    container_name: mg_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+
+  # Serveur MCP
+  mcp-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mg_mcp_server
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=mg_data
+      - DB_USER=mg_user
+      - DB_PASSWORD=mg_pass
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - ENVIRONMENT=development
+      - LOG_LEVEL=INFO
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./ai_core:/app/ai_core
+      - ./infrastructure:/app/infrastructure
+      - ./data:/app/data  # Dossier pour les fichiers à analyser
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+
+  # Interface Web (optionnel)
+  web-dashboard:
+    build:
+      context: ./interfaces/dashboard
+      dockerfile: Dockerfile
+    container_name: mg_dashboard
+    environment:
+      - MCP_SERVER_URL=http://mcp-server:8080
+      - NODE_ENV=development
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mcp-server
+    restart: unless-stopped
+
+  # Worker pour les tâches en arrière-plan (optionnel)
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    container_name: mg_worker
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=mg_data
+      - DB_USER=mg_user
+      - DB_PASSWORD=mg_pass
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - WORKER_CONCURRENCY=2
+    volumes:
+      - ./ai_core:/app/ai_core
+      - ./infrastructure:/app/infrastructure
+      - ./data:/app/data
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Nginx pour le proxy inverse (production)
+  nginx:
+    image: nginx:alpine
+    container_name: mg_nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./config/nginx.conf:/etc/nginx/nginx.conf
+      - ./config/ssl:/etc/nginx/ssl
+    depends_on:
+      - mcp-server
+      - web-dashboard
+    restart: unless-stopped
+    profiles:
+      - production
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  default:
+    name: mg_network
+    driver: bridge
